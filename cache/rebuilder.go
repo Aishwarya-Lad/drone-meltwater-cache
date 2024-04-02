@@ -93,7 +93,9 @@ func (r rebuilder) Rebuild(srcs []string) error {
 	wg.Wait()
 
 	if errs.Err() != nil {
-		return fmt.Errorf("rebuild failed, %w", errs)
+		for e := range errs {
+			level.Warn(r.logger).Log("msg", "ignore archival, ", e)
+		}
 	}
 
 	level.Info(r.logger).Log("msg", "cache built", "took", time.Since(now))
